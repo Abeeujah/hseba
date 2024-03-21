@@ -8,7 +8,7 @@ export async function createUser(entity) {
     const gzip = exclude(user, ["id", "password"]);
     return gzip;
   } catch (error) {
-    console.log({ dbError: error });
+    console.error({ dbError: error });
     throw new Error("User creation failed");
   }
 }
@@ -23,7 +23,7 @@ export async function findUserByEmail(email, full) {
     }
     return gzip;
   } catch (error) {
-    console.log({ dbError: error });
+    console.error({ dbError: error });
     throw new Error("Retrieve user by email failed");
   }
 }
@@ -35,7 +35,7 @@ export async function updateUser(email, password) {
     const gzip = exclude(user, ["id", "password"]);
     return gzip;
   } catch (error) {
-    console.log({ dbError: error });
+    console.error({ dbError: error });
     throw new Error("Failed to update user");
   }
 }

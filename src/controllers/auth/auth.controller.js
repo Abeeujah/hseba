@@ -1,5 +1,6 @@
+// DEPRECATED
+
 import pkg from "lodash";
-import db from "../../../prisma/prisma.client.js";
 import { getOtpToken } from "../../middleware/jwt.middleware.js";
 import {
   createUser,
@@ -39,7 +40,7 @@ export async function httpSignUp(req, res) {
   const validation = signUpSchema.safeParse(req.body);
 
   if (!validation.success) {
-    console.log({ signUpSchemaError: validation.error.errors });
+    console.error({ signUpSchemaError: validation.error.errors });
     return res
       .status(400)
       .json({ error: "Bad request, please provide valid sign up details" });
@@ -79,7 +80,7 @@ export async function httpSignIn(req, res) {
   const validation = signInSchema.safeParse(req.body);
 
   if (!validation.success) {
-    console.log({ signInSchemaError: validation.error.errors });
+    console.error({ signInSchemaError: validation.error.errors });
     return res
       .status(400)
       .json({ error: "Bad request, please provide valid sign in details" });
@@ -125,7 +126,7 @@ export async function httpForgotPassword(req, res) {
   const validation = forgotPasswordSchema.safeParse(req.body);
 
   if (!validation.success) {
-    console.log({ forgotPasswordSchemaError: validation.error.errors });
+    console.error({ forgotPasswordSchemaError: validation.error.errors });
     return res
       .status(400)
       .json({ error: "Bad request, please provide required details" });
@@ -139,7 +140,6 @@ export async function httpForgotPassword(req, res) {
 
     // Generate OTP and send to the email address
     const otp = generateRandomNDigits();
-    console.log({ otp });
 
     const mail = await sendMail({
       recipient: email,
@@ -216,7 +216,7 @@ export async function httpResetPassword(req, res) {
   const validation = resetPasswordSchema.safeParse(req.body);
 
   if (!validation.success) {
-    console.log({ resetPasswordSchemaError: validation.error.errors });
+    console.error({ resetPasswordSchemaError: validation.error.errors });
     return res
       .status(400)
       .json({ error: "Bad request, please provide required details" });
@@ -242,13 +242,11 @@ export async function httpResetPassword(req, res) {
 
     // Update user password
     const updatedUser = await updateUser(email, hash);
-    console.log(updatedUser);
 
     // Create session
     const accessToken = await signJwt(updatedUser, {
       expiresIn: accessTokenTtl,
     });
-    console.log({ accessToken });
     res.cookie("accessToken", accessToken, accessTokenOptions);
 
     const refreshToken = await signJwt(updatedUser, {

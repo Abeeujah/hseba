@@ -5,11 +5,9 @@ import config from "../../config/defaults.js";
 export async function hashPassword(plain) {
   try {
     const rounds = config["salt"];
-
     const salt = bcryptjs.genSaltSync(rounds);
-    const hash = await bcryptjs.hashSync(plain, salt);
 
-    return hash;
+    return await bcryptjs.hashSync(plain, salt);
   } catch (error) {
     console.error({ hashError: error });
     throw new Error("Failed to hash password");
@@ -19,9 +17,7 @@ export async function hashPassword(plain) {
 // Password compare utility function
 export async function compareHash(plain, hashed) {
   try {
-    const success = await bcryptjs.compareSync(plain, hashed);
-    console.log({ success });
-    return success;
+    return await bcryptjs.compareSync(plain, hashed);
   } catch (error) {
     console.error({ compareError: error });
     throw new Error("Could not complete password compare");

@@ -1,3 +1,5 @@
+// DEPRECATED
+
 import { findUserByEmail } from "../../services/auth.service.js";
 import {
   createUserInfo,
@@ -60,8 +62,6 @@ export async function httpUpdateCustomerProfile(req, res) {
   // Expects
   // UserType: "SELLER" | "RIDER" | "SHOPPER" | "FREELANCER" | "SERVICES" | "EXPLORER"
   const validation = userTypeSchema.safeParse(req.body);
-
-  console.log(validation.data);
 
   if (!validation.success) {
     console.error({ userTypeError: validation.error.errors });
