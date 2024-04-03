@@ -1,12 +1,16 @@
-import db from "../../prisma/prisma.client.js";
+import { UserModel } from "../models/auth/user.model.js";
 
 // Create user
-export async function createUser(entity) {
-  const { name, email, password } = entity;
+export async function createUser(userDto) {
   try {
-    const user = await db.user.create({ data: { name, email, password } });
-    const gzip = exclude(user, ["id", "password"]);
-    return gzip;
+    const createdUser = await UserModel.create(userDto);
+
+    if (!createdUser) {
+      return false;
+    }
+    
+    const { name, email } = createdUser;
+    return { name, email };
   } catch (error) {
     console.error({ dbError: error });
     throw new Error("User creation failed");
@@ -16,12 +20,13 @@ export async function createUser(entity) {
 // Find user by email
 export async function findUserByEmail(email, full) {
   try {
-    const user = await db.user.findUnique({ where: { email } });
-    const gzip = exclude(user, ["id", "password"]);
+    const user = await UserModel.findOne({ email });
+
     if (full) {
       return user;
     }
-    return gzip;
+
+    return { name: user.name, email };
   } catch (error) {
     console.error({ dbError: error });
     throw new Error("Retrieve user by email failed");
@@ -29,11 +34,16 @@ export async function findUserByEmail(email, full) {
 }
 
 // Update user
-export async function updateUser(email, password) {
+export async function updateUser(updateUserDto) {
   try {
-    const user = await db.user.update({ where: { email }, data: { password } });
-    const gzip = exclude(user, ["id", "password"]);
-    return gzip;
+    const { email, password } = updateUserDto;
+    const user = await UserModel.findOneAndUpdate(
+      { email },
+      { password },
+      { new: true }
+    );
+
+    return { name: user.name, email };
   } catch (error) {
     console.error({ dbError: error });
     throw new Error("Failed to update user");

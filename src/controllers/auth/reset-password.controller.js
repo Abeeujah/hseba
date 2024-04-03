@@ -1,6 +1,6 @@
-import { updateUser } from "../../services/auth.service.js";
+import { resetPasswordSchema } from "../../schemas/auth.schema.js";
+import { findUserByEmail, updateUser } from "../../services/auth.service.js";
 import { hashPassword } from "../../utils/auth.bcrypt.js";
-import { resetPasswordSchema } from "../../utils/auth.schema.js";
 import {
   accessTokenOptions,
   accessTokenTtl,
@@ -34,17 +34,28 @@ export async function httpResetPassword(req, res) {
   const { email } = user;
 
   try {
+    // Validate the user exists
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ code: 404, message: "Invalid credential provided." });
+    }
     // Hash new password
     const { password, confirmPassword } = validation.data;
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ error: "Passwords do not match." });
+      return res
+        .status(400)
+        .json({ code: 400, message: "Passwords do not match." });
     }
 
     const hash = await hashPassword(password);
 
     // Update user password
-    const updatedUser = await updateUser(email, hash);
+    const updateUserDto = { email, password: hash };
+    const updatedUser = await updateUser(updateUserDto);
 
     // Create session
     const accessToken = await signJwt(updatedUser, {
@@ -60,6 +71,6 @@ export async function httpResetPassword(req, res) {
     // Return
     return res.status(200).json({ updatedUser, accessToken, refreshToken });
   } catch (error) {
-    return res.status(500).json({ serverError: error.message });
+    return res.status(500).json({ code: 500, message: error.message });
   }
 }

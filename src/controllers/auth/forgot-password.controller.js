@@ -1,5 +1,5 @@
+import { forgotPasswordSchema } from "../../schemas/auth.schema.js";
 import { findUserByEmail } from "../../services/auth.service.js";
-import { forgotPasswordSchema } from "../../utils/auth.schema.js";
 import { otpTokenOptions, otpTokenTtl } from "../../utils/cookies.util.js";
 import { signJwt } from "../../utils/jwt.utils.js";
 import sendMail from "../../utils/mail.util.js";
@@ -15,9 +15,10 @@ export async function httpForgotPassword(req, res) {
 
   if (!validation.success) {
     console.error({ forgotPasswordSchemaError: validation.error.errors });
-    return res
-      .status(400)
-      .json({ error: "Bad request, please provide required details" });
+    return res.status(400).json({
+      code: 400,
+      message: "Bad request, please provide required details",
+    });
   }
 
   const { email } = validation.data;
@@ -25,6 +26,12 @@ export async function httpForgotPassword(req, res) {
   try {
     // Verify user with email exists
     const user = await findUserByEmail(email, false);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ code: 404, message: "Invalid credentials provided" });
+    }
 
     // Generate OTP and send to the email address
     const otp = generateRandomNDigits();

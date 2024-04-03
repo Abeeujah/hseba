@@ -1,6 +1,6 @@
 import pkg from "lodash";
 import { getOtpToken } from "../../middleware/jwt.middleware.js";
-import { otpTokenSchema } from "../../utils/auth.schema.js";
+import { otpTokenSchema } from "../../schemas/auth.schema.js";
 
 const { get } = pkg;
 

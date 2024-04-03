@@ -1,14 +1,15 @@
-import config from "../../config/defaults.js";
+import defaults from "../../config/defaults.js";
 import nodemailer from "nodemailer";
 
-const mailerAccount = config["mailerAccount"];
-const mailerPassword = config["mailerPassword"];
+const mailerAccount = defaults["mailerAccount"];
+const mailerPassword = defaults["mailerPassword"];
 
 // Receipient address
 // Message
 // Subject
 async function sendMail(part) {
   const mailer = mailerAccount;
+  console.log({ mailer, mailerPassword });
 
   const mailConfig = {
     host: "smtp.gmail.com",

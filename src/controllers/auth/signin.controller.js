@@ -1,6 +1,6 @@
+import { signInSchema } from "../../schemas/auth.schema.js";
 import { findUserByEmail } from "../../services/auth.service.js";
 import { compareHash } from "../../utils/auth.bcrypt.js";
-import { signInSchema } from "../../utils/auth.schema.js";
 import {
   accessTokenOptions,
   accessTokenTtl,
@@ -42,7 +42,9 @@ export async function httpSignIn(req, res) {
     const result = await compareHash(password, user.password);
 
     if (!result) {
-      return res.status(304).json({ error: "Incorrect email or password" });
+      return res
+        .status(304)
+        .json({ code: 304, message: "Incorrect email or password" });
     }
 
     const { name } = user;

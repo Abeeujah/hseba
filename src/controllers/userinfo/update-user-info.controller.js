@@ -1,6 +1,6 @@
+import { userInfoSchema } from "../../schemas/user.schema.js";
 import { findUserByEmail } from "../../services/auth.service.js";
 import { createUserInfo } from "../../services/user-info.services.js";
-import { userInfoSchema } from "../../utils/user.schema.js";
 
 // Update user information
 export async function httpUpdateUserInfo(req, res) {
@@ -31,7 +31,7 @@ export async function httpUpdateUserInfo(req, res) {
 
   try {
     // Ensure user is valid
-    const validUser = await findUserByEmail(email);
+    const validUser = await findUserByEmail(email, true);
 
     if (!validUser) {
       return res
@@ -40,12 +40,17 @@ export async function httpUpdateUserInfo(req, res) {
     }
 
     // Create user profile
-    const profileEntity = { gender, phone, address, userEmail: email };
-    const userInfo = await createUserInfo(profileEntity);
+    const profileDto = {
+      gender,
+      phone,
+      address,
+      user: validUser._id,
+    };
+    const userInfo = await createUserInfo(profileDto);
 
     // Return
     return res.status(201).json(userInfo);
   } catch (error) {
-    return res.status(500).json({ code:500, message: error.message });
+    return res.status(500).json({ code: 500, message: error.message });
   }
 }

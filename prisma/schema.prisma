@@ -9,26 +9,34 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String
-  email    String    @unique
-  password String
-  UserInfo UserInfo?
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String    @unique
+  password  String
+  UserInfo  UserInfo?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model UserInfo {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userEmail], references: [email])
-  userEmail String   @unique
-  gender    Gender
-  phone     String
-  address   String
-  userType  UserType @default(EXPLORER)
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  user       User        @relation(fields: [userEmail], references: [email])
+  userEmail  String      @unique
+  gender     Gender
+  phone      String
+  address    String
+  userType   UserType    @default(EXPLORER)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  Freelancer Freelancer?
+  Rider      Rider?
+  Seller     Seller?
+  Order      Order?
 }
 
 enum Gender {
@@ -43,4 +51,106 @@ enum UserType {
   FREELANCER
   SERVICES
   EXPLORER
+}
+
+model Image {
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
+  url String
+}
+
+model Freelancer {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userInfo        UserInfo @relation(fields: [freelancerEmail], references: [userEmail])
+  freelancerEmail String   @unique
+  totalBookings   Int      @default(0)
+  totalEarnings   Int      @default(0)
+  isActive        Boolean  @default(true)
+  hibernated      Boolean  @default(false)
+  serviceType     String
+  bio             String
+  experienceYears Int
+  externalLink    String?
+  coverBanner     String
+  profilePhoto    String
+  imageReferences String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Rider {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  userInfo           UserInfo @relation(fields: [riderEmail], references: [userEmail])
+  riderEmail         String   @unique
+  totalTrips         Int      @default(0)
+  totalEarnings      Int      @default(0)
+  isActive           Boolean  @default(true)
+  hibernated         Boolean  @default(false)
+  vehicleType        String
+  vehicleName        String
+  vehiclePlateNumber String
+  riderPicture       String
+  vehiclePicture     String
+  vehicleDocument    String
+  location           String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Seller {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  userInfo      UserInfo  @relation(fields: [sellerEmail], references: [userEmail])
+  sellerEmail   String    @unique
+  storeName     String    @unique
+  itemsType     String
+  coverBanner   String
+  profilePhoto  String
+  location      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  totalSales    Int       @default(0)
+  totalEarnings Int       @default(0)
+  hibernated    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  products      Product[]
+  orders        Order[]
+}
+
+model Product {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  Seller        Seller?    @relation(fields: [sellerId], references: [id])
+  sellerId      String?    @db.ObjectId
+  name          String
+  description   String
+  stock         Int?
+  price         Int
+  category      String
+  productImages String[]
+  cartItems     CartItem[]
+  Order         Order[]
+}
+
+model Cart {
+  id    String     @id @default(auto()) @map("_id") @db.ObjectId
+  items CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  Cart      Cart?    @relation(fields: [cartId], references: [id])
+  cartId    String?  @db.ObjectId
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @db.ObjectId
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  buyer      UserInfo @relation(fields: [buyerEmail], references: [userEmail])
+  buyerEmail String   @unique
+  Seller     Seller?  @relation(fields: [sellerId], references: [id])
+  sellerId   String?  @db.ObjectId
+  Product    Product? @relation(fields: [productId], references: [id])
+  productId  String?  @db.ObjectId
 }

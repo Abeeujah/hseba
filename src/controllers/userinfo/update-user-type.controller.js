@@ -1,6 +1,6 @@
+import { userTypeSchema } from "../../schemas/user.schema.js";
 import { findUserByEmail } from "../../services/auth.service.js";
-import { updatedUserInfo } from "../../services/user-info.services.js";
-import { userTypeSchema } from "../../utils/user.schema.js";
+import { updateProfile } from "../../services/user-info.services.js";
 
 // Select user type
 export async function httpUpdateCustomerProfile(req, res) {
@@ -27,7 +27,7 @@ export async function httpUpdateCustomerProfile(req, res) {
 
   try {
     // Get customer
-    const validUser = await findUserByEmail(email);
+    const validUser = await findUserByEmail(email, true);
 
     if (!validUser) {
       return res
@@ -37,9 +37,13 @@ export async function httpUpdateCustomerProfile(req, res) {
 
     // Update customer type
     const { userType } = validation.data;
-    const customerEntity = { userEmail: validUser.email, userType };
+    const userInfo = await updateProfile({ user: validUser._id }, { userType });
 
-    const userInfo = await updatedUserInfo(customerEntity);
+    if (!userInfo) {
+      return res
+        .status(500)
+        .json({ code: 500, message: "Error occured while updating profile." });
+    }
 
     // Return
     return res.status(200).json({ message: "Updated user info successfully" });

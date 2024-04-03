@@ -4,6 +4,9 @@ export const signUpSchema = z.object({
   name: z.string().min(3).max(255),
   email: z.string().email().min(5).max(255),
   password: z.string().min(7).max(255),
+  gender: z.enum(["MALE", "FEMALE"]),
+  address: z.string().min(3).max(255),
+  phone: z.string().min(11).max(14),
 });
 
 export const signInSchema = z.object({
