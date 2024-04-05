@@ -24,17 +24,14 @@ const userSchema = new Schema(
     freelancer: {
       type: Schema.Types.ObjectId,
       ref: "Freelancer",
-      unique: true,
     },
     rider: {
       type: Schema.Types.ObjectId,
       ref: "Rider",
-      unique: true,
     },
     seller: {
       type: Schema.Types.ObjectId,
       ref: "Seller",
-      unique: true,
     },
   },
   { timestamps: true }

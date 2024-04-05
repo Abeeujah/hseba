@@ -1,18 +1,26 @@
 import multer from "multer";
-import { registerFreelancerSchema } from "../schemas/freelancer.schema.js";
+import {
+  createProductSchema,
+  updateProductSchema,
+} from "../../schemas/product.schema.js";
 
 function checkFileType(req, file, cb) {
   // Validate req.body
-  req.body.experienceYears = Number(req.body.experienceYears);
-  const validation = registerFreelancerSchema.safeParse(req.body);
+  const validation = createProductSchema.safeParse(req.body);
 
   if (!validation.success) {
-    cb({ code: 400, message: "Validation errors, Bad request" }, false);
+    cb(
+      JSON.stringify({ code: 400, message: "Validation errors, Bad request" }),
+      false
+    );
   }
 
   // Validate the file
   if (!file) {
-    cb({ code: 400, message: "Please provide the File" }, false);
+    cb(
+      JSON.stringify({ code: 400, message: "Please provide the File" }),
+      false
+    );
   }
 
   // Allowed ext
@@ -26,10 +34,10 @@ function checkFileType(req, file, cb) {
     return cb(null, true);
   } else {
     cb(
-      {
+      JSON.stringify({
         code: 400,
         message: "Error: Invalid file type provided, Images only!",
-      },
+      }),
       false
     );
   }
@@ -40,8 +48,6 @@ const upload = multer({
   fileFilter: (req, file, cb) => checkFileType(req, file, cb),
 });
 
-export const cpUpload = upload.fields([
-  { name: "profilePhoto", maxCount: 1 },
-  { name: "coverBanner", maxCount: 1 },
-  { name: "imageReferences", maxCount: 4 },
+export const productImagesUpload = upload.fields([
+  { name: "images", maxCount: 5 },
 ]);

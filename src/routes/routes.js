@@ -1,10 +1,10 @@
 import { Router } from "express";
-import authRouter from "../controllers/auth/auth.route.js";
-import freelancerRouter from "../controllers/freelancer/freelancer.routes.js";
-import riderRouter from "../controllers/rider/rider.routes.js";
-import { productsRouter } from "../controllers/seller/products/products.routes.js";
-import sellerRouter from "../controllers/seller/seller.routes.js";
-import profileRouter from "../controllers/userinfo/user-info.route.js";
+import authRouter from "./auth/auth.routes.js";
+import profileRouter from "./auth/profile.routes.js";
+import freelancerRouter from "./accounts/freelancer/freelancer.routes.js";
+import riderRouter from "./accounts/rider/rider.routes.js";
+import sellerRouter from "./accounts/seller/seller.routes.js";
+import productsRouter from "./products/products.routes.js";
 
 const api = Router();
 

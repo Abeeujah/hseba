@@ -1,13 +1,16 @@
-import { createProductSchema } from "../../../schemas/product.schema.js";
+import {
+  createProductSchema,
+  updateProductSchema,
+} from "../../schemas/product.schema.js";
 import {
   createProduct,
   deleteProductById,
   getProductById,
   getProductsBySellerId,
   updateProduct,
-} from "../../../services/product.service.js";
-import { getSellerById } from "../../../services/seller.services.js";
-import { validateRequest } from "../../../services/user-info.services.js";
+} from "../../services/product.service.js";
+import { getSellerById } from "../../services/seller.services.js";
+import { validateRequest } from "../../services/user-info.services.js";
 
 export async function httpCreateProduct(req, res) {
   // Pick seller out of request params
@@ -17,7 +20,6 @@ export async function httpCreateProduct(req, res) {
   const { email } = user;
 
   // Validate request
-  req.body.price = Number(req.body.price);
   const validation = createProductSchema.safeParse(req.body);
 
   if (!validation.success) {
@@ -28,7 +30,7 @@ export async function httpCreateProduct(req, res) {
 
   const { price, name, description, category } = validation.data;
 
-  //   Pull product images from res.locals
+  // Pull product images from res.locals
   const { uploadMapping } = res.locals;
   const { images } = uploadMapping;
 
@@ -136,13 +138,24 @@ export async function httpUpdateProduct(req, res) {
   const { email } = req.user;
   const { sellerId, productId } = req.params;
 
-  const validation = createProductSchema.optional().safeParse(req.body);
+  const validation = updateProductSchema.safeParse(req.body);
 
   if (!validation.success) {
     return res
       .status(400)
       .json({ code: 400, message: "Please provide valid payload." });
   }
+
+  // Pull product images from res.locals
+  const { uploadMapping } = res.locals;
+  const images = uploadMapping?.images;
+
+  // Create product DTO
+  const updateProductDto = {
+    images,
+    ...validation.data,
+  };
+
   try {
     // Ensure the seller is valid
     const seller = await getSellerById(sellerId);
@@ -166,11 +179,13 @@ export async function httpUpdateProduct(req, res) {
     }
 
     // Update the product
-    const product = await updateProduct({ _id: productId });
+    const product = await updateProduct({ _id: productId }, updateProductDto);
 
     if (!product) {
-      throw new Error(`Failed to update product ${name}.`);
+      throw new Error(`Failed to update product.`);
     }
+
+    return res.status(200).json(product);
   } catch (error) {
     return res.status(500).json({ serverError: error.message });
   }
@@ -180,7 +195,6 @@ export async function httpDeleteProductById(req, res) {
   // User must be authenticated
   const { sellerId, productId } = req.params;
   const { email } = req.user;
-  console.log(email);
 
   try {
     const product = await getProductById(productId);

@@ -1,6 +1,6 @@
 import { SellerModel } from "../models/seller/seller.model.js";
 
-export async function setupSeller(sellerDto) {
+export async function setupSeller(sellerDto, user) {
   try {
     const seller = await SellerModel.create(sellerDto);
 

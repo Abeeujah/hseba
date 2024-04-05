@@ -12,11 +12,6 @@ import { signJwt } from "../../utils/jwt.utils.js";
 // Sign up endpoint
 export async function httpSignUp(req, res) {
   // Validate user request
-
-  // Expects
-  // Name: String
-  // Email: String && Email
-  // Password: String
   const validation = signUpSchema.safeParse(req.body);
 
   if (!validation.success) {

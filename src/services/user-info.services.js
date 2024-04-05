@@ -67,7 +67,6 @@ export async function getUserInfo(user) {
 
 export async function validateRequest(email) {
   const user = await findUserByEmail(email, true);
-  console.log(user);
   return user.seller;
 }
 

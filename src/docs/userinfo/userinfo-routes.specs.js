@@ -2,7 +2,7 @@
 
 /**
  * @openapi
- * /profile/create:
+ * /api/profile/create:
  *  post:
  *      summary: Create a user profile.
  *      tags: [UserInfo]
@@ -34,7 +34,7 @@
 
 /**
  * @openapi
- * /profile/usertype:
+ * /api/profile/usertype:
  *  post:
  *      summary: Updates the type of user.
  *      tags: [UserInfo]

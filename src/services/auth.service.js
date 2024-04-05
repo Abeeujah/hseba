@@ -8,7 +8,7 @@ export async function createUser(userDto) {
     if (!createdUser) {
       return false;
     }
-    
+
     const { name, email } = createdUser;
     return { name, email };
   } catch (error) {

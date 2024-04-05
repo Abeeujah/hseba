@@ -7,7 +7,7 @@ const sellerSchema = new Schema(
     coverBanner: { type: String, required: true, min: 3, max: 255 },
     profilePhoto: { type: String, required: true, min: 3, max: 255 },
     location: { type: String, required: true, min: 3, max: 255 },
-    rating: { type: Schema.Types.Decimal128, min: 0, max: 5 },
+    rating: { type: Number, min: 0, max: 5 },
     totalSales: { type: Number, min: 0, default: 0 },
     totalEarnings: { type: Number, min: 0, default: 0 },
     isActive: { type: Boolean, default: true },

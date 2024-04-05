@@ -9,7 +9,6 @@ const mailerPassword = defaults["mailerPassword"];
 // Subject
 async function sendMail(part) {
   const mailer = mailerAccount;
-  console.log({ mailer, mailerPassword });
 
   const mailConfig = {
     host: "smtp.gmail.com",

@@ -2,7 +2,7 @@
 
 /**
  * @openapi
- * /auth/signup:
+ * /api/auth/signup:
  *  post:
  *    summary: Sign up a User.
  *    tags: [Auth]
@@ -26,7 +26,7 @@
 
 /**
  * @openapi
- * /auth/signin:
+ * /api/auth/signin:
  *  post:
  *    summary: Sign in a user.
  *    tags: [Auth]
@@ -61,7 +61,7 @@
 
 /**
  * @openapi
- * /auth/forgot-password:
+ * /api/auth/forgot-password:
  *  post:
  *    summary: Forgot password.
  *    tags: [Auth]
@@ -102,7 +102,7 @@
 
 /**
  * @openapi
- * /auth/verify-otp:
+ * /api/auth/verify-otp:
  *  post:
  *      summary: Verify one time password.
  *      tags: [Auth]
@@ -147,7 +147,7 @@
 
 /**
  * @openapi
- * /auth/reset-password:
+ * /api/auth/reset-password:
  *  post:
  *      summary: Reset password.
  *      tags: [Auth]

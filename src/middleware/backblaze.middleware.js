@@ -9,6 +9,10 @@ const bucketId = defaults["backBlazeBucketID"];
 const bucketName = defaults["backBlazeBucketName"];
 
 export const uploadB2 = async (req, res, next) => {
+  if (!Object.keys(req.files).length) {
+    return next();
+  }
+
   // Configure and authorize backblaze
   const b2 = new B2({ applicationKeyId, applicationKey });
   const b2AuthResponse = await b2.authorize();

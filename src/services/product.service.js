@@ -19,9 +19,9 @@ export async function createProduct(productDto) {
     productOwner.products.push(product._id);
     await productOwner.save();
 
-    const { name, price } = product;
+    const { name, price, category, description, images } = product;
 
-    return { name, price };
+    return { name, price, category, description, images };
   } catch (error) {
     console.error({ createProductError: error });
     throw new Error(error.message);
@@ -30,7 +30,6 @@ export async function createProduct(productDto) {
 
 export async function getProductsBySellerId(sellerId) {
   try {
-    console.log({ sellerId });
     const products = await ProductModel.find({ seller: sellerId });
 
     if (!products.length) {
@@ -59,13 +58,14 @@ export async function getProductById(productId) {
 export async function deleteProductById(productId) {
   try {
     const product = await ProductModel.findByIdAndDelete(productId);
-    console.log({ product });
 
     if (!product) {
       return false;
     }
 
-    return product;
+    const { name, price, category, description, images } = product;
+
+    return { name, price, category, description, images };
   } catch (error) {}
 }
 
@@ -78,6 +78,10 @@ export async function updateProduct(filter, update) {
     if (!product) {
       return false;
     }
+
+    const { name, price, category, description, images } = product;
+
+    return { name, price, category, description, images };
   } catch (error) {
     throw new Error(error.message);
   }

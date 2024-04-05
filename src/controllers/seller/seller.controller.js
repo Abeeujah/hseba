@@ -46,10 +46,13 @@ export async function httpSellerSetup(req, res) {
         .json({ code: 404, message: "Invalid user credential." });
     }
 
-    const seller = await setupSeller({
-      ...sellerSetupDto,
-      userProfile: user._id,
-    });
+    const seller = await setupSeller(
+      {
+        ...sellerSetupDto,
+        userProfile: user._id,
+      },
+      user
+    );
 
     if (!seller) {
       return res.status(500).json({

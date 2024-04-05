@@ -9,7 +9,10 @@ const options = {
       version: "1.0.0",
       description: "API documentation for Tagdeep services.",
     },
-    servers: [{ url: "http://localhost:3000" }],
+    servers: [
+      { url: "http://localhost:3000/" },
+      { url: "https://tdbizz-backend.onrender.com/" },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -21,7 +24,7 @@ const options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ['**/*.js'],
+  apis: ["**/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

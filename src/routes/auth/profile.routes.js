@@ -1,10 +1,10 @@
 import { Router } from "express";
+import { httpUpdateUserInfo } from "../../controllers/userinfo/update-user-info.controller.js";
+import { httpUpdateCustomerProfile } from "../../controllers/userinfo/update-user-type.controller.js";
 import {
   deserializeUser,
   requireUser,
 } from "../../middleware/jwt.middleware.js";
-import { httpUpdateUserInfo } from "./update-user-info.controller.js";
-import { httpUpdateCustomerProfile } from "./update-user-type.controller.js";
 
 const profileRouter = Router();
 
